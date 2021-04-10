@@ -1,10 +1,9 @@
 #Team 45
 #Vansh Sharma
 #Sanket Deb
-
 import pyttsx3 , datetime , wikipedia , webbrowser , os , wolframalpha , time , random
 import speech_recognition as sr
-#from selenium import webdriver
+from selenium import webdriver
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
 engine.setProperty('voice',voices[0].id)
@@ -60,6 +59,47 @@ def pause():
             pause()
     except:
         pause()
+def whatsapp(txt):
+    from selenium import webdriver
+    from selenium.webdriver.support import expected_conditions as ec
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.common.by import By
+    from selenium.common.exceptions import NoSuchElementException
+    import time
+    Chrome_Profile_Path = "user-data-dir=C:\\Users\\vansh\\AppData\\Local\\Google\\Chrome\\User Data\\Wtsp"
+    options = webdriver.ChromeOptions()
+    options.add_argument(Chrome_Profile_Path)
+    def new_chat(user_name):
+        time.sleep(2)
+        new_chat = driver.find_element_by_xpath('//div[@class="RPX_m"]')
+        new_chat.click()
+        new_user = driver.find_element_by_xpath('//div[@class="_3u328 copyable-text selectable-text"]')
+        new_user.send_keys(user_name)
+        time.sleep(1)
+        try:
+            user = driver.find_element_by_xpath('//span[@title="{}"]'.format(user_name))
+            user.click()
+        except NoSuchElementException:
+            print('Given user "{}" not found in the contact list'.format(user_name))
+        except Exception as e:
+            driver.close()
+            print(e)
+            sys.exit()
+    ask_text = txt
+    ask_contact= ["Android"]
+    driver = webdriver.Chrome(options=options)
+    driver.get('https://web.whatsapp.com/')
+    for names in ask_contact:
+        time.sleep(1)
+        WebDriverWait(driver,50).until(lambda driver:driver.find_element_by_xpath('/html/body/div/div[1]/div[1]/div[3]/div/div[1]/div/label/div/div[2]')).send_keys(names)
+        WebDriverWait(driver,15).until(lambda driver:driver.find_element_by_xpath('//span[@title="{}"]'.format(names))).click()
+        inp_xpath = '/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[2]/div/div[2]'
+        input_box = driver.find_element_by_xpath(inp_xpath)
+        time.sleep(2)
+        input_box.send_keys(ask_text + Keys.ENTER)
+    time.sleep(5)
+    driver.quit()
 if __name__=="__main__":
     wishMe()
     while True:
@@ -91,11 +131,6 @@ if __name__=="__main__":
         elif 'you do' in query or 'your work' in query:
             print('I make things easy and help you as much as I can')
             speak('I make things easy and help you as much as I can')
-        elif 'quit' in query or 'log off' in query or 'close' in query or 'abort' in query or 'stop' in query or 'bye' in query:
-            print("Thankyou for using me. See you soon.")
-            speak("Thankyou for using me. See you soon.")
-            print("_____________LOGGING OFF_____________")
-            break
         elif 'according to google' in query or 'google' in query:
             query=query.replace("according to google","")
             browser=webdriver.Chrome() 
@@ -103,6 +138,20 @@ if __name__=="__main__":
         elif 'pause' in query or 'shut up' in query or 'hold on' in query:
             print("Ok")
             pause()
+        elif 'i am not feeling well' in query or "I am ill" in query:
+            print("Disease prediction starting...")
+            speak("Disease prediction starting")
+            import disease_prediction
+            disease_prediction.NaiveBayes()
+            print("Take care")
+            speak("Take care")
+        elif 'emergency' in query:
+            whatsapp("*EMERGENCY*\nTHERE IS AN IMMEDIATE NEED OF HUMANN ASSISTANCE. KINDLY ATTEND TO IT ASAP\n ~ automated reply by Dhruv")
+        elif 'quit' in query or 'log off' in query or 'close' in query or 'abort' in query or 'stop' in query or 'bye' in query:
+            print("Thankyou for using me. See you soon.")
+            speak("Thankyou for using me. See you soon.")
+            print("_____________LOGGING OFF_____________")
+            break
         else:
             client1=wolframalpha.Client('JW6Y7Q-GKWVR76AJG')
             if query!='none':
