@@ -1,6 +1,3 @@
-#Team 45
-#Vansh Sharma
-#Sanket Deb
 import pyttsx3 , datetime , wikipedia , webbrowser , os , wolframalpha , time , random
 import speech_recognition as sr
 from selenium import webdriver
